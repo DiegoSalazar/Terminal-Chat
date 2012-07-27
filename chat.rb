@@ -38,7 +38,7 @@ class Server < TCPServer
     $stdout.puts "[#{self}|#{@chatroom}: #{Time.now.to_s}] #{action}"
   end
   
-  private
+  protected
   
   def sockets
     [self] | @chatroom.clients.map { |client| client.socket }
@@ -77,15 +77,17 @@ class Chatroom
     log 'kick', client
   end
   
-  private
-  
   def shout!(message, *except)
     (@clients - except).each { |client| client.receives message }
   end
   
+  protected
+  
   def client_of(connection)
     @clients.detect { |client| client.socket == connection }
   end
+  
+  private
   
   def log(action, client = nil, message = nil)
     puts "[#{self}|#{@chatroom}: #{Time.now.to_s}] #{action}:#{client} #{message}"
