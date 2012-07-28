@@ -20,12 +20,10 @@ class Server < TCPServer
         readable.each do |socket|
           if socket == self
             @chatroom.accept self
+          elsif socket.eof? # logoff
+            @chatroom.kick socket
           else
-            if socket.eof? # logoff
-              @chatroom.kick socket
-            else
-              @chatroom.receive socket
-            end
+            @chatroom.receive socket
           end
         end
       end
